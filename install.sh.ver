@@ -1,6 +1,22 @@
 #!/bin/sh
+#
 RELEASE=@@RELEASE@@
-case `uname` in
+
+case $(uname -m) in
+  x86_64)
+    ARCH=amd64
+    ;;
+  arm64)
+    ARCH=arm64
+    ;;
+  aarch64)
+    ARCH=arm64
+    ;;
+  *)
+    echo "Unsupported Arch Type: $(uname -m)"
+esac
+
+case $(uname) in
   Darwin)
     PKG_NAME=kitura-cli_${RELEASE}_darwin.tar.gz
     PKG_URL=https://github.com/Kitura-Next/kitura-cli/releases/download/${RELEASE}/${PKG_NAME}
@@ -8,11 +24,11 @@ case `uname` in
     curl -sSLO $PKG_URL && tar -xzf $PKG_NAME && mv darwin-amd64/kitura /usr/local/bin/ && rmdir darwin-amd64 && rm $PKG_NAME && echo kitura-cli ${RELEASE} successfully installed.
     ;;
   Linux)
-    PKG_NAME=kitura-cli_${RELEASE}_amd64.deb
+    PKG_NAME=kitura-cli_${RELEASE}_${ARCH}.deb
     PKG_URL=https://github.com/Kitura-Next/kitura-cli/releases/download/${RELEASE}/${PKG_NAME}
 
     curl -sSLO $PKG_URL && sudo apt install ./$PKG_NAME && rm $PKG_NAME && echo kitura-cli ${RELEASE} successfully installed.
     ;;
   *)
-    echo "Unsupported OS: `uname`"
+    echo "Unsupported OS: $(uname)"
 esac
