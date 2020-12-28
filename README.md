@@ -55,4 +55,4 @@ Flags:
 ```
 
 ## Release process
-Instructions on releasing a new version of the kitura-cli can be found [here](Release-Process.md).
+Instructions on releasing a new version of the kitura-cli can be found [here](Testing-Release-Process.md).
