@@ -11,7 +11,7 @@ case `uname` in
     PKG_NAME=kitura-cli_${RELEASE}_amd64.deb
     PKG_URL=https://github.com/Kitura-Next/kitura-cli/releases/download/${RELEASE}/${PKG_NAME}
 
-    curl -sSLO $PKG_URL && dpkg -i $PKG_NAME && rm $PKG_NAME && echo kitura-cli ${RELEASE} successfully installed.
+    curl -sSLO $PKG_URL && sudo apt install ./$PKG_NAME && rm $PKG_NAME && echo kitura-cli ${RELEASE} successfully installed.
     ;;
   *)
     echo "Unsupported OS: `uname`"

@@ -1,20 +1,14 @@
-GOCMD=go
-GOBUILD=$(GOCMD) build
-GOGET=$(GOCMD) get
-GOCLEAN=$(GOCMD) clean
-GOTEST=$(GOCMD) test
-
 BINARY_NAME=kitura
 PACKAGE_NAME=kitura-cli
-LINUX_DIR=linux-amd64
+ARCH=amd64
+LINUX_DIR=linux-$(ARCH)
 LINUX_PATH=/usr/local/bin
 LINUX_BINARY=$(LINUX_DIR)$(LINUX_PATH)/$(BINARY_NAME)
 MACOS_DIR=darwin-amd64
 MACOS_PATH=/
 MACOS_BINARY=$(MACOS_DIR)$(MACOS_PATH)/$(BINARY_NAME)
 
-GOPATH=$(HOME)/kitura-cli-$(RELEASE)
-KITURA_SRC=$(GOPATH)/src/kitura
+KITURA_SRC=$(HOME)/go/src/kitura
 
 # Handle additional param for sed -i on Darwin
 SED_FLAGS=
@@ -23,54 +17,71 @@ ifeq ($(UNAME_S),Darwin)
     SED_FLAGS := ""
 endif
 
+debug:
+
 all: build package
 build: build-linux build-darwin
 package: package-linux package-darwin
-clean: 
-	$(GOCLEAN)
+clean:
+	go clean
 	rm -f install.sh
 	rm -f $(LINUX_DIR)/DEBIAN/control
 	rm -rf $(LINUX_DIR)/usr
 	rm -rf $(MACOS_DIR)
 
-setup:
-	# Check RELEASE is set
+setup_release:
+# Check RELEASE is set
 ifndef RELEASE
 	$(error RELEASE is not set)
 endif
-	
+
 	# Copy kitura/cmd module into GOPATH
 	mkdir -p $(KITURA_SRC)
 	cp -R -p cmd $(KITURA_SRC)
 	# Replace release placeholders in sources
 	cp install.sh.ver install.sh
 	cp kitura.rb.ver kitura.rb
-	cp $(LINUX_DIR)/DEBIAN/control.ver $(LINUX_DIR)/DEBIAN/control
+	mkdir -p $(LINUX_DIR)/DEBIAN
+	cp linux/DEBIAN/control.ver $(LINUX_DIR)/DEBIAN/control
 	sed -i $(SED_FLAGS) -e"s#@@RELEASE@@#$(RELEASE)#g" install.sh $(LINUX_DIR)/DEBIAN/control $(KITURA_SRC)/cmd/root.go kitura.rb
+	sed -i $(SED_FLAGS) -e"s#@@ARCH@@#$(ARCH)#g" $(LINUX_DIR)/DEBIAN/control
+
+setup_test:
+	# Copy kitura/cmd module into GOPATH
+	mkdir -p $(KITURA_SRC)
+	cp -R -p cmd $(KITURA_SRC)
+
+rename_arm64:
+	# rename directories for arm64 build and packaging
+
 deps:
 	# Install dependencies
-	$(GOGET) github.com/spf13/cobra/cobra
-	$(GOGET) gopkg.in/src-d/go-git.v4/...
+	go get github.com/spf13/cobra/cobra
+	go get gopkg.in/src-d/go-git.v4/...
 
-build-linux: setup deps
-	GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(LINUX_BINARY) -v
+## Linux
+build-linux-test: setup_test deps
+	GOOS=linux GOARCH=amd64 go build -o $(LINUX_BINARY) -v
 
-build-darwin: setup deps
-	GOOS=darwin GOARCH=amd64 $(GOBUILD) -o $(MACOS_BINARY) -v
+build-linux-release: setup_release deps
+	GOOS=linux GOARCH=$(ARCH) go build -o $(LINUX_BINARY) -v
 
-test:
-	cd $(KITURA_SRC)
-	$(GOTEST) kitura/cmd
-
-package-linux: build-linux
+package-linux: build-linux-release
 	cp -R -p $(LINUX_DIR) $(PACKAGE_NAME)_$(RELEASE)
 	chmod -R 755 $(LINUX_DIR)$(LINUX_PATH)
 	dpkg-deb --build $(PACKAGE_NAME)_$(RELEASE)
-	mv $(PACKAGE_NAME)_$(RELEASE).deb $(PACKAGE_NAME)_$(RELEASE)_amd64.deb
-	tar -czf $(PACKAGE_NAME)_$(RELEASE)_linux.tar.gz $(LINUX_DIR)/usr/
+	mv $(PACKAGE_NAME)_$(RELEASE).deb $(PACKAGE_NAME)_$(RELEASE)_$(ARCH).deb
+	tar -czf $(PACKAGE_NAME)_$(RELEASE)__$(ARCH)_linux.tar.gz $(LINUX_DIR)/usr/
 	rm -r $(PACKAGE_NAME)_$(RELEASE)
 
-package-darwin-tar: build-darwin
+## MacOS
+build-darwin-test: setup_test deps
+	GOOS=darwin GOARCH=amd64 go build -o $(MACOS_BINARY) -v
+
+build-darwin-release: setup_release deps
+	GOOS=darwin GOARCH=amd64 go build -o $(MACOS_BINARY) -v
+
+package-darwin-tar: build-darwin-release
 	tar -czf $(PACKAGE_NAME)_$(RELEASE)_darwin.tar.gz $(MACOS_DIR)
 
 package-darwin: package-darwin-tar

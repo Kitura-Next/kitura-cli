@@ -1,7 +1,7 @@
 # Kitura command-line interface
 
 This Go package provides a `kitura` command-line interface, to simplify the process of creating [Kitura](https://github.com/Kitura-Next/Kitura) applications.
-
+<!--- NOTE: need to fix Homebrew installation!
 ## Installation on macOS (via Homebrew)
 
 Kitura's CLI may be installed using [Homebrew](https://brew.sh):
@@ -9,6 +9,7 @@ Kitura's CLI may be installed using [Homebrew](https://brew.sh):
 $ brew tap ibm-swift/kitura
 $ brew install kitura
 ```
+--->
 
 ## Installation (simple)
 
@@ -32,7 +33,7 @@ $ sudo mv darwin-amd64/kitura /usr/local/bin/
 On Linux:
 ```
 curl -LO https://github.com/Kitura-Next/kitura-cli/releases/download/<release>/kitura-cli_<release>_amd64.deb
-sudo dpkg -i kitura-cli_<release>_amd64.deb
+sudo apt install ./kitura-cli_<release>_amd64.deb
 ```
 
 ## Usage
