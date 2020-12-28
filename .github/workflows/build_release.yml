@@ -32,3 +32,4 @@ jobs:
           kitura-cli_${{ env.RELEASE_VERSION }}_*.deb
           kitura-cli_${{ env.RELEASE_VERSION }}_darwin.tar.gz
           kitura.rb
+          install.sh
