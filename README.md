@@ -1,15 +1,15 @@
 # Kitura command-line interface
 
 This Go package provides a `kitura` command-line interface, to simplify the process of creating [Kitura](https://github.com/Kitura-Next/Kitura) applications.
-<!--- NOTE: need to fix Homebrew installation!
+
 ## Installation on macOS (via Homebrew)
 
 Kitura's CLI may be installed using [Homebrew](https://brew.sh):
 ```
-$ brew tap ibm-swift/kitura
+$ brew tap Kitura-Next/kitura
 $ brew install kitura
 ```
---->
+
 
 ## Installation (simple)
 
