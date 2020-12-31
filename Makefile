@@ -75,7 +75,7 @@ package-linux: build-linux-release
 	chmod -R 755 $(LINUX_DIR)$(LINUX_PATH)
 	dpkg-deb --build $(PACKAGE_NAME)_$(RELEASE)
 	mv $(PACKAGE_NAME)_$(RELEASE).deb $(PACKAGE_NAME)_$(RELEASE)_$(ARCH).deb
-	tar -czf $(PACKAGE_NAME)_$(RELEASE)__$(ARCH)_linux.tar.gz $(LINUX_DIR)/usr/
+	tar -czf $(PACKAGE_NAME)_$(RELEASE)_$(ARCH)_linux.tar.gz $(LINUX_DIR)/usr/
 	rm -r $(PACKAGE_NAME)_$(RELEASE)
 
 ## MacOS
