@@ -7,7 +7,7 @@ case $(uname -m) in
     ARCH=amd64
     ;;
   armv7*)
-    ARCH=armhf
+    ARCH=arm
     ;;
   arm64 | aarch64)
     ARCH=arm64
