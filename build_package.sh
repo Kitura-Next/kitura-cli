@@ -16,6 +16,7 @@ case `uname` in
   Linux)
     make package-linux
     make ARCH=arm64 package-linux
+    make ARCH=arm package-linux
     make package-darwin
     ;;
   *)

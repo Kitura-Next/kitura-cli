@@ -6,10 +6,10 @@ case $(uname -m) in
   x86_64)
     ARCH=amd64
     ;;
-  arm64)
-    ARCH=arm64
+  armv7*)
+    ARCH=armhf
     ;;
-  aarch64)
+  arm64 | aarch64)
     ARCH=arm64
     ;;
   *)
